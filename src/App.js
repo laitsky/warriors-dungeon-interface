@@ -96,11 +96,13 @@ const App = () => {
   }
 
   useEffect(() => {
-    window.ethereum.on('networkChanged', (networkId) => {
-      if (+window.ethereum.networkVersion !== 4) { // 4: Rinkeby Testnet 
-        setIsRinkeby(false);
-      }
-    });
+    if (window.ethereum) {
+      window.ethereum.on('networkChanged', () => {
+        if (+window.ethereum.networkVersion !== 4) { // 4: Rinkeby Testnet 
+          setIsRinkeby(false);
+        }
+      });
+    }
     if (currentAccount !== null) {
       setIsLoading(true);
     }
