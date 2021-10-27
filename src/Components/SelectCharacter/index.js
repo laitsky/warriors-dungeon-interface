@@ -24,18 +24,16 @@ const SelectCharacter = ({ setCharacterNFT }) => {
 
       setGameContract(gameContract);
     } else {
-      console.log("Ethereum object not found");
+      console.error("Ethereum object not found");
     }
   }, []);
 
   useEffect(() => {
     const getCharacters = async () => {
       try {
-        console.log("Getting contract characters to mint");
 
         // call contract to get all mint-able characters
         const charactersTxn = await gameContract.getAllDefaultCharacters();
-        console.log("charactersTxn: ", charactersTxn);
 
         // transform all characters data
         const characters = charactersTxn.map((characterData) => transformCharacterData(characterData));
@@ -47,13 +45,8 @@ const SelectCharacter = ({ setCharacterNFT }) => {
     };
 
     const onCharacterMint = async (sender, tokenId, characterIndex) => {
-      console.log(
-        `CharacterNFTMinted - sender: ${sender} tokenId: ${tokenId.toNumber()} characterIndex: ${characterIndex}`
-      );
-
       if (gameContract) {
         const characterNFT = await gameContract.checkIfUserHasNFT();
-        console.log('CharacterNFT: ', characterNFT);
         setCharacterNFT(transformCharacterData(characterNFT));
       }
     }
@@ -96,14 +89,12 @@ const SelectCharacter = ({ setCharacterNFT }) => {
     try {
       if (gameContract) {
         setMintingCharacter(true);
-        console.log("Minting character in progress...");
         const mintTxn = await gameContract.mintCharacterNFT(characterId);
         await mintTxn.wait();
-        console.log('mintTxn: ', mintTxn);
         setMintingCharacter(false);
       }
     } catch (error) {
-      console.log("MintCharacterAction Error: ", error);
+      console.error("MintCharacterAction Error: ", error);
       setMintingCharacter(false);
     }
   }

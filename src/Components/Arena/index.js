@@ -30,21 +30,19 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
 
       setGameContract(gameContract);
     } else {
-      console.log('Ethereum object not found');
+      console.error('Ethereum object not found');
     }
   }, []);
 
   useEffect(() => {
     const fetchBoss = async () => {
       const bossTxn = await gameContract.getBigBoss();
-      console.log('Boss: ', bossTxn);
       setBoss(transformCharacterData(bossTxn));
     }
     const onAttackComplete = (newBossHp, newPlayerHp) => {
       const bossHp = newBossHp.toNumber();
       const playerHp = newPlayerHp.toNumber();
 
-      console.log(`AttackComplete: Boss HP: ${bossHp}, Player HP: ${playerHp}`);
 
       // update boss and player HP
       setBoss((oldStat) => ({ ...oldStat, hp: bossHp }));
@@ -66,10 +64,8 @@ const Arena = ({ characterNFT, setCharacterNFT }) => {
     try {
       if (gameContract) {
         setAttackState("attacking");
-        console.log("Attacking boss...");
         const attackTxn = await gameContract.attackBoss();
         await attackTxn.wait();
-        console.log('attackTxn: ', attackTxn);
         setAttackState('hit');
 
         setShowToast(true);
