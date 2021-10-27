@@ -17,6 +17,7 @@ const App = () => {
   const [currentAccount, setCurrentAccount] = useState(null);
   const [characterNFT, setCharacterNFT] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isRinkeby, setIsRinkeby] = useState(true);
 
   const checkIfWalletIsConnected = async () => {
     try {
@@ -66,7 +67,9 @@ const App = () => {
       return <LoadingIndicator />
     }
     // scenario 1: user has not connected to the app
-    if (!currentAccount) {
+    if (!isRinkeby) {
+      return <h1 style={{color: 'white'}}>Please connect to Rinkeby Network</h1>
+    } else if (!currentAccount) {
       return (
         <div className="connect-wallet-container">
           <img
@@ -93,6 +96,11 @@ const App = () => {
   }
 
   useEffect(() => {
+    window.ethereum.on('networkChanged', (networkId) => {
+      if (+window.ethereum.networkVersion !== 4) { // 4: Rinkeby Testnet 
+        setIsRinkeby(false);
+      }
+    });
     if (currentAccount !== null) {
       setIsLoading(true);
     }
